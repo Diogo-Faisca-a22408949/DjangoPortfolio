@@ -30,20 +30,27 @@ def importar_tfcs():
             orientadores = ", ".join([str(x).strip() for x in orientadores_lista])
             areas = ", ".join([str(x).strip() for x in areas_lista])
 
-          
-            nome_curso = item.get('curso', 'Sem Curso Especificado')
+            nome_json = item.get('curso', 'Sem Curso Especificado')
+            
+            mapa_cursos = {
+                "Licenciatura em Engenharia Informática": "Engenharia Informática (LEI)",
+                "Licenciatura em Informática de Gestão": "Informática de Gestão (LIG)",
+                "Licenciatura em Ciência de Dados": "Ciência de Dados",
+                "Licenciatura em Computação e Matemática Aplicada": "Computação e Matemática Aplicada"
+            }
+            
+            nome_oficial = mapa_cursos.get(nome_json, nome_json)
             
             licenciatura_obj, created = Licenciatura.objects.get_or_create(
-                nome=nome_curso,
-                defaults={'apresentacao': f'Apresentação gerada automaticamente para {nome_curso}.'}
+                nome=nome_oficial,
+                defaults={'apresentacao': f'Apresentação de {nome_oficial}.'}
             )
-  
 
             TFC.objects.get_or_create(
                 titulo=item.get('titulo', 'Sem Título'),
                 autores=autores,
                 orientadores=orientadores,
-                licenciatura=licenciatura_obj, 
+                licenciatura=licenciatura_obj,
                 ano=ano,
                 resumo=item.get('resumo', ''),
                 link_pdf=item.get('pdf', ''),
@@ -51,7 +58,7 @@ def importar_tfcs():
                 areas=areas
             )
             
-    print("TFCs importados com sucesso, agora perfeitamente ligados às Licenciaturas!")
+    print("TFCs importados com sucesso!")
 
 if __name__ == '__main__':
     importar_tfcs()

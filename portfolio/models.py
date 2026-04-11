@@ -31,8 +31,8 @@ class Tecnologia(models.Model):
     nome = models.CharField(max_length=50)
     logo = models.ImageField(upload_to='tecnologias/', blank=True)
     descricao = models.TextField(blank=True)
-    link_oficial = models.URLField(blank=True, null=True) # REQUISITO: Website oficial
-    nivel_interesse = models.IntegerField(default=1, help_text="Escala de 1 a 5") # REQUISITO: Nível de interesse
+    link_oficial = models.URLField(blank=True, null=True) 
+    nivel_interesse = models.IntegerField(default=1, help_text="Escala de 1 a 5") 
     
     class Meta:
         verbose_name_plural = "Tecnologias"
@@ -43,10 +43,10 @@ class Tecnologia(models.Model):
 class Projeto(models.Model):
     titulo = models.CharField(max_length=100)
     descricao = models.TextField()
-    conceitos_aplicados = models.TextField(blank=True, null=True) # REQUISITO: Conceitos aplicados
+    conceitos_aplicados = models.TextField(blank=True, null=True) 
     imagem = models.ImageField(upload_to='projetos/', blank=True)
-    video_demo = models.URLField(blank=True, null=True) # REQUISITO: Video Demo
-    github_link = models.URLField(blank=True, null=True) # REQUISITO: Link GitHub
+    video_demo = models.URLField(blank=True, null=True) 
+    github_link = models.URLField(blank=True, null=True) 
     uc = models.ForeignKey(UnidadeCurricular, on_delete=models.CASCADE)
     tecnologias = models.ManyToManyField(Tecnologia, blank=True)
 
@@ -66,7 +66,7 @@ class TFC(models.Model):
     link_pdf = models.URLField(blank=True, null=True)
     link_imagem = models.URLField(blank=True, null=True)
     areas = models.CharField(max_length=200, blank=True)
-    destaque = models.BooleanField(default=False, help_text="Marcar para destacar na página principal") # REQUISITO: Forma de classificar/destacar
+    destaque = models.BooleanField(default=False, help_text="Marcar para destacar na página principal")
 
     class Meta:
         verbose_name_plural = "TFCs"
@@ -77,7 +77,7 @@ class TFC(models.Model):
 class Competencia(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True)
-    projetos_associados = models.ManyToManyField(Projeto, blank=True) # REQUISITO: Relação com outras entidades
+    projetos_associados = models.ManyToManyField(Projeto, blank=True) 
     tecnologias_associadas = models.ManyToManyField(Tecnologia, blank=True)
     
     class Meta:
