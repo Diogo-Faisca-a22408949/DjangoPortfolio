@@ -1,0 +1,22 @@
+{% extends 'portfolio/base.html' %}
+{% block content %}
+<h2 class="page-title">Making Of do Projeto</h2>
+<div style="max-width: 800px;">
+    {% for post in makingofs %}
+    <article class="card" style="margin-bottom: 1.5rem;">
+        <header style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
+            <h3>{{ post.titulo }}</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ post.data|date:"d M Y" }}</span>
+        </header>
+        
+        <h4>Processo e Decisões</h4>
+        <p style="font-size: 0.95rem;">{{ post.descricao_processo }}</p>
+        
+        {% if post.erros_encontrados %}
+        <h4 style="color: #ef4444;">Desafios e Soluções</h4>
+        <p style="font-size: 0.95rem;">{{ post.erros_encontrados }}</p>
+        {% endif %}
+    </article>
+    {% endfor %}
+</div>
+{% endblock %}

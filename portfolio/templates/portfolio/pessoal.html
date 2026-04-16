@@ -1,0 +1,45 @@
+{% extends 'portfolio/base.html' %}
+
+{% block content %}
+<h2 class="page-title">Sobre Mim</h2>
+
+<h3 style="margin: 2rem 0 1rem;">Competências Técnicas</h3>
+<div class="card-grid">
+    {% for comp in competencias %}
+    <article class="card">
+        <h3>{{ comp.nome }}</h3>
+        <p style="font-size: 0.9rem; margin-bottom: 1rem;">{{ comp.descricao }}</p>
+        
+        <h4>Tecnologias Base</h4>
+        <div class="pill-group">
+            {% for tech in comp.tecnologias_associadas.all %}
+                <span class="tech-pill" style="background: #e2e8f0; color: #1e293b;">{{ tech.nome }}</span>
+            {% empty %}
+                <span style="font-size: 0.8rem;">Não especificado</span>
+            {% endfor %}
+        </div>
+    </article>
+    {% endfor %}
+</div>
+
+<h3 style="margin: 2rem 0 1rem;">Formação & Certificações</h3>
+<div class="card-grid">
+    {% for formacao in formacoes %}
+    <article class="card">
+        <h3 style="color: var(--accent);">{{ formacao.ano }} - {{ formacao.instituicao }}</h3>
+        <p style="font-weight: 600; font-size: 1.1rem;">{{ formacao.titulo }}</p>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">{{ formacao.descricao }}</p>
+    </article>
+    {% endfor %}
+</div>
+
+<h3 style="margin: 2rem 0 1rem;">Interesses Pessoais</h3>
+<div class="card-grid">
+    {% for interesse in interesses %}
+    <article class="card">
+        <h3>{{ interesse.nome }}</h3>
+        <p style="font-size: 0.9rem;">{{ interesse.descricao }}</p>
+    </article>
+    {% endfor %}
+</div>
+{% endblock %}

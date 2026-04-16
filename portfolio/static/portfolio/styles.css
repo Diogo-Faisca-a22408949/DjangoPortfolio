@@ -1,0 +1,49 @@
+:root {
+    --bg-color: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --primary: #0f172a;
+    --accent: #3b82f6;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+
+body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
+
+/* Navbar Clean */
+header.navbar {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.navbar h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+
+/* Layout Principal */
+main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+.page-title { margin-bottom: 2rem; font-size: 2.2rem; color: var(--primary); border-bottom: 3px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; }
+
+/* Cards Modernos */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+.card h3 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.3rem; }
+.card h4 { color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.5rem; }
+
+/* As Pills (Tecnologias) */
+.pill-group { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.tech-pill { background: #eff6ff; color: var(--accent); font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.8rem; border-radius: 9999px; }
+
+/* UCs específicas */
+.uc-projeto { background: #f8fafc; border-left: 3px solid var(--accent); padding: 1rem; margin-top: 1rem; border-radius: 0 8px 8px 0; }
+.uc-projeto h5 { font-size: 1rem; color: var(--primary); }

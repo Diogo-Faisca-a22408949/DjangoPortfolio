@@ -1,0 +1,43 @@
+{% extends 'portfolio/base.html' %}
+
+{% block content %}
+<h2 class="page-title">Formação Académica</h2>
+
+{% for lic in licenciaturas %}
+    <section style="margin-bottom: 4rem;">
+        <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">{{ lic.nome }}</h3>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">{{ lic.apresentacao }}</p>
+        
+        <div class="card-grid">
+            {% for uc in lic.ucs.all %}
+            <article class="card">
+                <header>
+                    <h3>{{ uc.nome }}</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Ano {{ uc.ano }} | {{ uc.semestre }}º Semestre | {{ uc.ects }} ECTS</p>
+                </header>
+                
+                <section>
+                    <h4>Projetos e Tecnologias</h4>
+                    {% if uc.projeto_set.all %}
+                        {% for projeto in uc.projeto_set.all %}
+                            <div class="uc-projeto">
+                                <h5>{{ projeto.titulo }}</h5>
+                                <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">{{ projeto.descricao|truncatewords:15 }}</p>
+                                
+                                <div class="pill-group">
+                                    {% for tech in projeto.tecnologias.all %}
+                                        <span class="tech-pill">{{ tech.nome }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Sem projetos registados nesta UC.</p>
+                    {% endif %}
+                </section>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+{% endfor %}
+{% endblock %}
