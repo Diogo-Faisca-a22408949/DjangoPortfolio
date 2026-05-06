@@ -3,42 +3,36 @@
 {% block content %}
 <h2 class="page-title">Sobre Mim</h2>
 
-<h3 style="margin: 2rem 0 1rem;">Competências Técnicas</h3>
+<div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0 1rem;">
+    <h3 style="margin:0;">Competências Técnicas</h3>
+    <a href="{% url 'portfolio:nova_competencia' %}" class="btn btn-sm btn-add">+ Nova Competência</a>
+</div>
 <div class="card-grid">
     {% for comp in competencias %}
     <article class="card">
         <h3>{{ comp.nome }}</h3>
         <p style="font-size: 0.9rem; margin-bottom: 1rem;">{{ comp.descricao }}</p>
-        
-        <h4>Tecnologias Base</h4>
-        <div class="pill-group">
-            {% for tech in comp.tecnologias_associadas.all %}
-                <span class="tech-pill" style="background: #e2e8f0; color: #1e293b;">{{ tech.nome }}</span>
-            {% empty %}
-                <span style="font-size: 0.8rem;">Não especificado</span>
-            {% endfor %}
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="{% url 'portfolio:edita_competencia' comp.id %}" class="btn btn-sm btn-edit">Editar</a>
+            <a href="{% url 'portfolio:apaga_competencia' comp.id %}" class="btn btn-sm btn-delete">Apagar</a>
         </div>
     </article>
     {% endfor %}
 </div>
 
-<h3 style="margin: 2rem 0 1rem;">Formação & Certificações</h3>
+<div style="display: flex; justify-content: space-between; align-items: center; margin: 3rem 0 1rem;">
+    <h3 style="margin:0;">Formação & Certificações</h3>
+    <a href="{% url 'portfolio:nova_formacao' %}" class="btn btn-sm btn-add">+ Nova Formação</a>
+</div>
 <div class="card-grid">
     {% for formacao in formacoes %}
     <article class="card">
-        <h3 style="color: var(--accent);">{{ formacao.ano }} - {{ formacao.instituicao }}</h3>
-        <p style="font-weight: 600; font-size: 1.1rem;">{{ formacao.titulo }}</p>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">{{ formacao.descricao }}</p>
-    </article>
-    {% endfor %}
-</div>
-
-<h3 style="margin: 2rem 0 1rem;">Interesses Pessoais</h3>
-<div class="card-grid">
-    {% for interesse in interesses %}
-    <article class="card">
-        <h3>{{ interesse.nome }}</h3>
-        <p style="font-size: 0.9rem;">{{ interesse.descricao }}</p>
+        <h3 style="color: var(--primary);">{{ formacao.ano }} - {{ formacao.instituicao }}</h3>
+        <p style="font-weight: 600;">{{ formacao.titulo }}</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+            <a href="{% url 'portfolio:edita_formacao' formacao.id %}" class="btn btn-sm btn-edit">Editar</a>
+            <a href="{% url 'portfolio:apaga_formacao' formacao.id %}" class="btn btn-sm btn-delete">Apagar</a>
+        </div>
     </article>
     {% endfor %}
 </div>

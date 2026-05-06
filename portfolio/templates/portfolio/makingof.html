@@ -1,22 +1,41 @@
 {% extends 'portfolio/base.html' %}
+{% load markdownify %}
+
 {% block content %}
-<h2 class="page-title">Making Of do Projeto</h2>
-<div style="max-width: 800px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 class="page-title" style="margin: 0;">Making Of do Projeto</h2>
+</div>
+
+<div style="max-width: 800px; margin: auto;">
+    <p style="margin-bottom: 2rem; color: var(--text-muted); font-size: 1.1rem; text-align: center;">Registo do processo de desenvolvimento, desafios enfrentados e resoluções, documentado ao longo das semanas.</p>
+
     {% for post in makingofs %}
-    <article class="card" style="margin-bottom: 1.5rem;">
-        <header style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
-            <h3>{{ post.titulo }}</h3>
-            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ post.data|date:"d M Y" }}</span>
+    <article class="card" style="margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+        <header style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem;">
+            <h3 style="color: var(--primary); font-size: 1.4rem;">{{ post.titulo }}</h3>
+            <span style="font-size: 0.9rem; color: var(--text-muted); background: #f8fafc; padding: 0.3rem 0.6rem; border-radius: 4px;">{{ post.data|date:"d M Y" }}</span>
         </header>
         
-        <h4>Processo e Decisões</h4>
-        <p style="font-size: 0.95rem;">{{ post.descricao_processo }}</p>
+        <div style="margin-bottom: 1.5rem;">
+            <h4 style="margin-bottom: 0.5rem; color: #1e293b;">Processo e Decisões</h4>
+            <!-- UTILIZAÇÃO DO MARKDOWNIFY -->
+            <div style="font-size: 1rem; line-height: 1.6; color: #334155;">
+                {{ post.descricao_processo|markdownify }}
+            </div>
+        </div>
         
         {% if post.erros_encontrados %}
-        <h4 style="color: #ef4444;">Desafios e Soluções</h4>
-        <p style="font-size: 0.95rem;">{{ post.erros_encontrados }}</p>
+        <div style="background-color: #fef2f2; border-left: 4px solid var(--danger); padding: 1rem 1.5rem; border-radius: 0 8px 8px 0;">
+            <h4 style="color: var(--danger); margin-bottom: 0.5rem;">Desafios e Soluções</h4>
+            <!-- UTILIZAÇÃO DO MARKDOWNIFY -->
+            <div style="font-size: 0.95rem; line-height: 1.5; color: #7f1d1d;">
+                {{ post.erros_encontrados|markdownify }}
+            </div>
+        </div>
         {% endif %}
     </article>
+    {% empty %}
+        <p style="text-align: center; color: var(--text-muted);">Ainda não existem registos no Making Of.</p>
     {% endfor %}
 </div>
 {% endblock %}

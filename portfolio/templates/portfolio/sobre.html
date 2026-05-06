@@ -1,0 +1,93 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2 class="page-title">Sobre esta Aplicação</h2>
+<p style="margin-bottom: 2rem; color: var(--text-muted);">Esta secção detalha a arquitetura técnica, modelação de dados e tecnologias utilizadas na construção deste portfólio web.</p>
+
+<!-- 1. Arquitetura MVT do Django -->
+<section class="form-container" style="max-width: 1000px; margin-bottom: 2rem;">
+    <h3 style="color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 0.5rem;">1. Arquitetura MVT do Django</h3>
+    
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem;">
+        <div style="flex: 1; min-width: 300px;">
+            <p><strong>Desenho da Arquitetura:</strong></p>
+            <img src="{{ MEDIA_URL }}mvt.png" alt="Desenho da Arquitetura MVT" style="max-width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+        
+        <div style="flex: 1; min-width: 300px;">
+            <p>A aplicação segue o padrão <strong>MVT (Model-View-Template)</strong> do Django. Os fluxos de informação funcionam da seguinte forma:</p>
+            <ul style="line-height: 1.6; margin-left: 1.5rem; margin-top: 1rem;">
+                <li><strong>Model:</strong> Responsável por aceder e gerir a Base de Dados SQLite. Mapeia as tabelas usando classes Python (ORM).</li>
+                <li><strong>View:</strong> Recebe o pedido HTTP, pede os dados ao Model, e passa-os para o Template.</li>
+                <li><strong>Template:</strong> Ficheiro HTML dinâmico que gera a interface final para o utilizador.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="margin-top: 3rem;">
+        <h4>Vídeo Tutorial: Criação de um Novo Projeto</h4>
+        <p style="font-size: 0.9rem; margin-bottom: 1rem;">Demonstração técnica da criação e funcionamento do formulário para adicionar novos projetos.</p>
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; box-shadow: var(--shadow);">
+            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" src="https://www.youtube.com/embed/SEU_VIDEO_ID" allowfullscreen></iframe>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Modelação -->
+<section class="form-container" style="max-width: 1000px; margin-bottom: 2rem;">
+    <h3 style="color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 0.5rem;">2. Modelação da Base de Dados (DER)</h3>
+    
+    <p style="margin-top: 1.5rem;"><strong>Diagrama Entidade-Relação:</strong></p>
+    <img src="{{ MEDIA_URL }}der.png" alt="Diagrama Entidade Relação" style="max-width: 100%; margin-bottom: 2rem; border-radius: 8px; border: 1px solid #ddd;">
+    
+    <h4>Excerto da modelação em `models.py`</h4>
+    <pre style="background: #1e293b; color: #f8fafc; padding: 1.5rem; overflow-x: auto; border-radius: 8px; font-size: 0.9rem; margin-top: 1rem;"><code>class Projeto(models.Model):
+    titulo = models.CharField(max_length=100)
+    descricao = models.TextField()
+    uc = models.ForeignKey(UnidadeCurricular, on_delete=models.CASCADE)
+    tecnologias = models.ManyToManyField(Tecnologia, blank=True)</code></pre>
+</section>
+
+<!-- 3. Tecnologias -->
+<section class="form-container" style="max-width: 1000px; margin-bottom: 2rem;">
+    <h3 style="color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 0.5rem;">3. Tecnologias Utilizadas</h3>
+    <p style="margin-top: 1rem; margin-bottom: 2rem;">Stack tecnológica utilizada no desenvolvimento deste projeto:</p>
+
+    <div class="card-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div style="border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 8px; background: white;">
+            <h5 style="color: var(--primary); margin-bottom: 0.5rem;">Django (Python)</h5>
+            <p style="font-size: 0.9rem; color: #475569;">Framework principal utilizado para o backend. Facilita a gestão da base de dados através do ORM e o controlo de rotas.</p>
+        </div>
+        <div style="border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 8px; background: white;">
+            <h5 style="color: var(--primary); margin-bottom: 0.5rem;">SQLite</h5>
+            <p style="font-size: 0.9rem; color: #475569;">Base de dados relacional por defeito no Django, utilizada para armazenar as UCs, projetos e competências.</p>
+        </div>
+        <div style="border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 8px; background: white;">
+            <h5 style="color: var(--primary); margin-bottom: 0.5rem;">HTML5 & CSS3</h5>
+            <p style="font-size: 0.9rem; color: #475569;">Utilizados para estruturar e estilizar as páginas do portfólio, garantindo um design responsivo e moderno.</p>
+        </div>
+        <div style="border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 8px; background: white;">
+            <h5 style="color: var(--primary); margin-bottom: 0.5rem;">Git & GitHub</h5>
+            <p style="font-size: 0.9rem; color: #475569;">Ferramentas essenciais para o controlo de versões do código e alojamento do repositório remoto.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Estrutura das Páginas -->
+<section class="form-container" style="max-width: 1000px; margin-bottom: 2rem;">
+    <h3 style="color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 0.5rem;">4. Estrutura das Páginas (Mapa do Site)</h3>
+    <p style="margin-top: 1rem; margin-bottom: 1.5rem;">Desenho da hierarquia e navegação da aplicação:</p>
+    <img src="{{ MEDIA_URL }}mapa.png" alt="Mapa de Navegação do Site" style="max-width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+</section>
+
+<!-- 5. Repositório GitHub -->
+<section class="form-container" style="max-width: 1000px;">
+    <h3 style="color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 0.5rem;">5. Repositório GitHub</h3>
+    
+    <div style="margin-top: 1.5rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 2rem; border-radius: 8px; text-align: center;">
+        <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">O código fonte completo está disponível no repositório público.</p>
+        <a href="https://github.com/Diogo-Faisca-a22408949/DjangoPortfolio" target="_blank" class="btn btn-edit" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Aceder ao GitHub</a>
+    </div>
+</section>
+{% endblock %}

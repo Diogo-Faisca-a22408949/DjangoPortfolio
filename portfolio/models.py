@@ -27,12 +27,19 @@ class UnidadeCurricular(models.Model):
     def __str__(self):
         return self.nome
 
+class TipoTecnologia(models.Model):
+    nome = models.CharField(max_length=50) # Ex: Frontend, Backend, Base de Dados, Storage, Outros
+
+    def __str__(self):
+        return self.nome
+
 class Tecnologia(models.Model):
     nome = models.CharField(max_length=50)
     logo = models.ImageField(upload_to='tecnologias/', blank=True)
-    descricao = models.TextField(blank=True)
+    descricao = models.TextField(blank=True, help_text="O que faz, o que permite, o que gostou/não gostou.")
     link_oficial = models.URLField(blank=True, null=True) 
     nivel_interesse = models.IntegerField(default=1, help_text="Escala de 1 a 5") 
+    tipo = models.ForeignKey(TipoTecnologia, on_delete=models.SET_NULL, null=True, related_name='tecnologias')
     
     class Meta:
         verbose_name_plural = "Tecnologias"
@@ -48,7 +55,7 @@ class Projeto(models.Model):
     video_demo = models.URLField(blank=True, null=True) 
     github_link = models.URLField(blank=True, null=True) 
     uc = models.ForeignKey(UnidadeCurricular, on_delete=models.CASCADE)
-    tecnologias = models.ManyToManyField(Tecnologia, blank=True)
+    tecnologias = models.ManyToManyField(Tecnologia, blank=True, related_name="projetos")
 
     class Meta:
         verbose_name_plural = "Projetos"
@@ -102,8 +109,8 @@ class Formacao(models.Model):
 class MakingOf(models.Model):
     titulo = models.CharField(max_length=100)
     data = models.DateTimeField(auto_now_add=True)
-    descricao_processo = models.TextField(help_text="Descrição de decisões e justificação de modelos")
-    erros_encontrados = models.TextField(blank=True, help_text="Erros encontrados e respetivas correções")
+    descricao_processo = models.TextField(help_text="Descrição de decisões e justificação de modelos (Pode usar Markdown)")
+    erros_encontrados = models.TextField(blank=True, help_text="Erros encontrados e respetivas correções (Pode usar Markdown)")
     uso_ia = models.TextField(blank=True, help_text="Como a IA contribuiu (ou não) para o processo") 
     imagem_caderno = models.ImageField(upload_to='makingof/', blank=True, null=True, help_text="Registo em papel, DER, etc.")
 
