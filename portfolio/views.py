@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Licenciatura, Competencia, Formacao, InteressePessoal, MakingOf, TFC, Projeto, Tecnologia, TipoTecnologia
-from .forms import ProjetoForm, TecnologiaForm, CompetenciaForm, FormacaoForm
+from .models import Licenciatura, Competencia, Formacao, InteressePessoal, MakingOf, TFC, Projeto, Tecnologia, TipoTecnologia, UnidadeCurricular
+from .forms import ProjetoForm, TecnologiaForm, CompetenciaForm, FormacaoForm, UnidadeCurricularForm, LicenciaturaForm
 
 # --- VISTAS DE LISTAGEM (Páginas Principais) ---
 
 def cursos_view(request):
     licenciaturas = Licenciatura.objects.prefetch_related('ucs__projeto_set__tecnologias').all()
-    return render(request, 'portfolio/cursos.html', {'licenciaturas': licenciaturas})
+    return render(request, 'portfolio/cursos.html', {'licenciaturas': licenciaturas, 'is_gestor': _is_gestor(request.user)})
 
 def pessoal_view(request):
     context = {
@@ -14,6 +14,7 @@ def pessoal_view(request):
         'formacoes': Formacao.objects.all(),
         'interesses': InteressePessoal.objects.all(),
         'tecnologias': Tecnologia.objects.all(), 
+        'is_gestor': _is_gestor(request.user),
     }
     return render(request, 'portfolio/pessoal.html', context)
 
@@ -78,3 +79,102 @@ def apaga_competencia(request, id): return apagar_item(request, id, Competencia,
 def nova_formacao(request): return criar_item(request, FormacaoForm, 'pessoal', 'Nova Formação')
 def edita_formacao(request, id): return editar_item(request, id, Formacao, FormacaoForm, 'pessoal', 'Editar Formação')
 def apaga_formacao(request, id): return apagar_item(request, id, Formacao, 'pessoal')
+
+# SECURITY: decorated wrappers that restrict CRUD to authenticated gestores
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def _is_gestor(user):
+    return user.is_authenticated and user.groups.filter(name='gestor-portfolio').exists()
+
+# Decorated CRUD wrappers (override the simple functions above)
+@login_required
+@user_passes_test(_is_gestor)
+def novo_projeto(request):
+    return criar_item(request, ProjetoForm, 'cursos', 'Novo Projeto')
+
+@login_required
+@user_passes_test(_is_gestor)
+def edita_projeto(request, id):
+    return editar_item(request, id, Projeto, ProjetoForm, 'cursos', 'Editar Projeto')
+
+@login_required
+@user_passes_test(_is_gestor)
+def apaga_projeto(request, id):
+    return apagar_item(request, id, Projeto, 'cursos')
+
+@login_required
+@user_passes_test(_is_gestor)
+def nova_tecnologia(request):
+    return criar_item(request, TecnologiaForm, 'pessoal', 'Nova Tecnologia')
+
+@login_required
+@user_passes_test(_is_gestor)
+def edita_tecnologia(request, id):
+    return editar_item(request, id, Tecnologia, TecnologiaForm, 'pessoal', 'Editar Tecnologia')
+
+@login_required
+@user_passes_test(_is_gestor)
+def apaga_tecnologia(request, id):
+    return apagar_item(request, id, Tecnologia, 'pessoal')
+
+@login_required
+@user_passes_test(_is_gestor)
+def nova_competencia(request):
+    return criar_item(request, CompetenciaForm, 'pessoal', 'Nova Competência')
+
+@login_required
+@user_passes_test(_is_gestor)
+def edita_competencia(request, id):
+    return editar_item(request, id, Competencia, CompetenciaForm, 'pessoal', 'Editar Competência')
+
+@login_required
+@user_passes_test(_is_gestor)
+def apaga_competencia(request, id):
+    return apagar_item(request, id, Competencia, 'pessoal')
+
+@login_required
+@user_passes_test(_is_gestor)
+def nova_formacao(request):
+    return criar_item(request, FormacaoForm, 'pessoal', 'Nova Formação')
+
+@login_required
+@user_passes_test(_is_gestor)
+def edita_formacao(request, id):
+    return editar_item(request, id, Formacao, FormacaoForm, 'pessoal', 'Editar Formação')
+
+@login_required
+@user_passes_test(_is_gestor)
+def apaga_formacao(request, id):
+    return apagar_item(request, id, Formacao, 'pessoal')
+
+# Unidades Curriculares
+@login_required
+@user_passes_test(_is_gestor)
+def nova_uc(request):
+    return criar_item(request, UnidadeCurricularForm, 'cursos', 'Nova Unidade Curricular')
+
+@login_required
+@user_passes_test(_is_gestor)
+def edita_uc(request, id):
+    return editar_item(request, id, UnidadeCurricular, UnidadeCurricularForm, 'cursos', 'Editar Unidade Curricular')
+
+@login_required
+@user_passes_test(_is_gestor)
+def apaga_uc(request, id):
+    return apagar_item(request, id, UnidadeCurricular, 'cursos')
+
+# Licenciaturas
+@login_required
+@user_passes_test(_is_gestor)
+def nova_licenciatura(request):
+    return criar_item(request, LicenciaturaForm, 'cursos', 'Nova Licenciatura')
+
+@login_required
+@user_passes_test(_is_gestor)
+def edita_licenciatura(request, id):
+    return editar_item(request, id, Licenciatura, LicenciaturaForm, 'cursos', 'Editar Licenciatura')
+
+@login_required
+@user_passes_test(_is_gestor)
+def apaga_licenciatura(request, id):
+    return apagar_item(request, id, Licenciatura, 'cursos')

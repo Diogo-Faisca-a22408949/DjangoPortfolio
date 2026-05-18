@@ -5,7 +5,9 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0 1rem;">
     <h3 style="margin:0;">Competências Técnicas</h3>
+    {% if is_gestor %}
     <a href="{% url 'portfolio:nova_competencia' %}" class="btn btn-sm btn-add">+ Nova Competência</a>
+    {% endif %}
 </div>
 <div class="card-grid">
     {% for comp in competencias %}
@@ -13,8 +15,10 @@
         <h3>{{ comp.nome }}</h3>
         <p style="font-size: 0.9rem; margin-bottom: 1rem;">{{ comp.descricao }}</p>
         <div style="display: flex; gap: 0.5rem;">
+            {% if is_gestor %}
             <a href="{% url 'portfolio:edita_competencia' comp.id %}" class="btn btn-sm btn-edit">Editar</a>
             <a href="{% url 'portfolio:apaga_competencia' comp.id %}" class="btn btn-sm btn-delete">Apagar</a>
+            {% endif %}
         </div>
     </article>
     {% endfor %}
@@ -22,7 +26,9 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin: 3rem 0 1rem;">
     <h3 style="margin:0;">Formação & Certificações</h3>
+    {% if is_gestor %}
     <a href="{% url 'portfolio:nova_formacao' %}" class="btn btn-sm btn-add">+ Nova Formação</a>
+    {% endif %}
 </div>
 <div class="card-grid">
     {% for formacao in formacoes %}
@@ -30,8 +36,10 @@
         <h3 style="color: var(--primary);">{{ formacao.ano }} - {{ formacao.instituicao }}</h3>
         <p style="font-weight: 600;">{{ formacao.titulo }}</p>
         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+            {% if is_gestor %}
             <a href="{% url 'portfolio:edita_formacao' formacao.id %}" class="btn btn-sm btn-edit">Editar</a>
             <a href="{% url 'portfolio:apaga_formacao' formacao.id %}" class="btn btn-sm btn-delete">Apagar</a>
+            {% endif %}
         </div>
     </article>
     {% endfor %}

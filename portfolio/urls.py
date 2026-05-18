@@ -32,6 +32,16 @@ urlpatterns = [
     path('formacao/nova/', views.nova_formacao, name='nova_formacao'),
     path('formacao/editar/<int:id>/', views.edita_formacao, name='edita_formacao'),
     path('formacao/apagar/<int:id>/', views.apaga_formacao, name='apaga_formacao'),
+
+    # CRUD Unidade Curricular
+    path('uc/nova/', views.nova_uc, name='nova_uc'),
+    path('uc/editar/<int:id>/', views.edita_uc, name='edita_uc'),
+    path('uc/apagar/<int:id>/', views.apaga_uc, name='apaga_uc'),
+
+    # CRUD Licenciatura
+    path('licenciatura/nova/', views.nova_licenciatura, name='nova_licenciatura'),
+    path('licenciatura/editar/<int:id>/', views.edita_licenciatura, name='edita_licenciatura'),
+    path('licenciatura/apagar/<int:id>/', views.apaga_licenciatura, name='apaga_licenciatura'),
 ]
 
 # Configuração para servir ficheiros MEDIA em ambiente de desenvolvimento

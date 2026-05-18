@@ -1,0 +1,17 @@
+{% extends 'portfolio/base.html' %}
+{% block content %}
+<div class="form-container">
+    <h2>Iniciar Sessão</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="username">Utilizador</label>
+        <input type="text" name="username" id="username" required>
+        <label for="password">Palavra-passe</label>
+        <input type="password" name="password" id="password" required>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-edit">Entrar</button>
+            <a href="{% url 'accounts:register' %}" class="btn btn-back">Registar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
