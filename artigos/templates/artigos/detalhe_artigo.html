@@ -69,27 +69,41 @@
                 </div>
             {% endif %}
 
-            <!-- Interações (Likes) -->
-            <div style="margin: 2rem 0; padding: 1.5rem; background: #f8fafc; border-radius: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
-                <div style="font-size: 0.95rem;">
-                    <span style="color: var(--secondary);">
+            <!-- Interações (Likes / Rating) -->
+            <div style="margin: 2rem 0; padding: 1.5rem; background: #f8fafc; border-radius: 0.75rem; display: grid; gap: 1rem;">
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
+                    <div style="font-size: 0.95rem; color: var(--secondary);">
                         ❤️ <strong id="total-likes">{{ artigo.total_likes }}</strong> pessoa(s) gostou(aram)
-                    </span>
+                    </div>
+                    <div style="font-size: 0.95rem; color: var(--secondary);">
+                        ⭐ {% if artigo.average_rating %}{{ artigo.average_rating|floatformat:1 }}{% else %}Sem avaliação{% endif %}
+                        {% if artigo.rating_count %}({{ artigo.rating_count }} pontuações){% endif %}
+                    </div>
                 </div>
 
-                {% if user.is_authenticated %}
-                    <button onclick="toggleLike({{ artigo.id }})" class="btn" 
-                            style="background-color: {% if usuario_gostou %}var(--danger){% else %}#e5e7eb{% endif %}; 
-                                   color: {% if usuario_gostou %}white{% else %}#333{% endif %};">
-                        ❤️ {% if usuario_gostou %}Já gosto{% else %}Gosto{% endif %}
-                    </button>
-                {% else %}
-                    <p style="margin: 0; color: var(--secondary); font-size: 0.9rem;">
-                        <a href="{% url 'accounts:login' %}" style="color: var(--primary); text-decoration: none;">
-                            Faça login
-                        </a> para gostar de artigos
-                    </p>
-                {% endif %}
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+                    {% if user.is_authenticated %}
+                        <button onclick="toggleLike({{ artigo.id }}, this)" class="btn" 
+                                style="background-color: {% if usuario_gostou %}var(--danger){% else %}#e5e7eb{% endif %}; 
+                                       color: {% if usuario_gostou %}white{% else %}#333{% endif %};">
+                            ❤️ {% if usuario_gostou %}Já gosto{% else %}Gosto{% endif %}
+                        </button>
+                    {% else %}
+                        <p style="margin: 0; color: var(--secondary); font-size: 0.9rem;">
+                            <a href="{% url 'accounts:login' %}" style="color: var(--primary); text-decoration: none;">
+                                Faça login
+                            </a> para gostar de artigos
+                        </p>
+                    {% endif %}
+
+                    <form method="post" action="{% url 'artigos:adicionar_rating' artigo.id %}" style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin: 0;">
+                        {% csrf_token %}
+                        {{ form_rating.valor }}
+                        <button type="submit" class="btn" style="background: var(--primary); color: white;">
+                            Avaliar
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </article>
@@ -101,30 +115,28 @@
         </h2>
 
         <!-- Formulário de Novo Comentário -->
-        {% if user.is_authenticated and form_comentario %}
-            <form method="post" action="{% url 'artigos:adicionar_comentario' artigo.id %}" 
-                  style="background: var(--bg-card); padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 2rem; box-shadow: var(--shadow);">
-                {% csrf_token %}
-                
-                <div style="margin-bottom: 1rem;">
-                    {{ form_comentario.texto }}
-                </div>
+        <form method="post" action="{% url 'artigos:adicionar_comentario' artigo.id %}" 
+              style="background: var(--bg-card); padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 2rem; box-shadow: var(--shadow);">
+            {% csrf_token %}
 
-                <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
-                    <button type="submit" class="btn" style="background-color: var(--primary); color: white;">
-                        ✓ Enviar Comentário
-                    </button>
+            {% if not user.is_authenticated %}
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="id_autor_nome" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Nome</label>
+                    {{ form_comentario.autor_nome }}
                 </div>
-            </form>
-        {% elif not user.is_authenticated %}
-            <div style="background: #fef2f2; border-left: 4px solid var(--danger); padding: 1rem; border-radius: 0.5rem; margin-bottom: 2rem;">
-                <p style="margin: 0; font-size: 0.95rem;">
-                    <a href="{% url 'accounts:login' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">
-                        Faça login
-                    </a> para deixar um comentário
-                </p>
+            {% endif %}
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="id_texto" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Comentário</label>
+                {{ form_comentario.texto }}
             </div>
-        {% endif %}
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button type="submit" class="btn" style="background-color: var(--primary); color: white;">
+                    ✓ Enviar Comentário
+                </button>
+            </div>
+        </form>
 
         <!-- Lista de Comentários -->
         {% if comentarios %}
@@ -133,7 +145,15 @@
                     <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 0.75rem; box-shadow: var(--shadow);">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
                             <div>
-                                <p style="margin: 0; font-weight: 600;">{{ comentario.autor.username }}</p>
+                                <p style="margin: 0; font-weight: 600;">
+                                    {% if comentario.autor %}
+                                        {{ comentario.autor.username }}
+                                    {% elif comentario.autor_nome %}
+                                        {{ comentario.autor_nome }}
+                                    {% else %}
+                                        Visitante
+                                    {% endif %}
+                                </p>
                                 <p style="margin: 0.25rem 0 0; color: var(--secondary); font-size: 0.85rem;">
                                     {{ comentario.data_criacao|date:"d M Y \à\s H:i" }}
                                 </p>
@@ -211,7 +231,7 @@
 </style>
 
 <script>
-function toggleLike(artigoId) {
+function toggleLike(artigoId, element) {
     fetch(`/artigos/${artigoId}/like/`, {
         method: 'POST',
         headers: {
@@ -223,7 +243,7 @@ function toggleLike(artigoId) {
     .then(response => response.json())
     .then(data => {
         document.getElementById('total-likes').textContent = data.total_likes;
-        const btn = event.target.closest('.btn');
+        const btn = element;
         if (data.gostou) {
             btn.style.backgroundColor = 'var(--danger)';
             btn.style.color = 'white';

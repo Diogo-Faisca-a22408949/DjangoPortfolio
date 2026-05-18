@@ -3,13 +3,14 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from .models import Artigo, Like, Comentario
-from .forms import ArtigoForm, ComentarioForm
+from django.db.models import Avg
+from .models import Artigo, Like, Comentario, Rating
+from .forms import ArtigoForm, ComentarioForm, RatingForm
 
 
-def _is_autor(user):
-    """Verificar se o utilizador é membro do grupo 'autores'"""
-    return user.is_authenticated and user.groups.filter(name='autores').exists()
+def _is_blogger(user):
+    """Verificar se o utilizador é membro do grupo 'bloggers'"""
+    return user.is_authenticated and user.groups.filter(name='bloggers').exists()
 
 
 # --- VISTAS DE LISTAGEM ---
@@ -19,12 +20,12 @@ def lista_artigos(request):
     artigos = Artigo.objects.all().order_by('-data_criacao')
     return render(request, 'artigos/lista_artigos.html', {
         'artigos': artigos,
-        'is_autor': _is_autor(request.user),
+        'is_blogger': _is_blogger(request.user),
     })
 
 
 def detalhe_artigo(request, id):
-    """Detalhe de um artigo com comentários e likes"""
+    """Detalhe de um artigo com comentários, rating e likes"""
     artigo = get_object_or_404(Artigo, id=id)
     comentarios = artigo.comentarios.all()
     usuario_gostou = False
@@ -32,17 +33,16 @@ def detalhe_artigo(request, id):
     if request.user.is_authenticated:
         usuario_gostou = artigo.likes.filter(usuario=request.user).exists()
     
-    # Formulário de comentário
-    form_comentario = None
-    if request.user.is_authenticated:
-        form_comentario = ComentarioForm()
+    form_comentario = ComentarioForm()
+    form_rating = RatingForm()
     
     context = {
         'artigo': artigo,
         'comentarios': comentarios,
         'usuario_gostou': usuario_gostou,
         'form_comentario': form_comentario,
-        'is_autor': _is_autor(request.user),
+        'form_rating': form_rating,
+        'is_blogger': _is_blogger(request.user),
         'pode_editar': request.user == artigo.autor,
     }
     return render(request, 'artigos/detalhe_artigo.html', context)
@@ -51,9 +51,9 @@ def detalhe_artigo(request, id):
 # --- CRUD DE ARTIGOS ---
 
 @login_required
-@user_passes_test(_is_autor)
+@user_passes_test(_is_blogger)
 def criar_artigo(request):
-    """Criar novo artigo (apenas para autores)"""
+    """Criar novo artigo (apenas para bloggers)"""
     if request.method == 'POST':
         form = ArtigoForm(request.POST, request.FILES)
         if form.is_valid():
@@ -72,7 +72,7 @@ def criar_artigo(request):
 
 
 @login_required
-@user_passes_test(_is_autor)
+@user_passes_test(_is_blogger)
 def editar_artigo(request, id):
     """Editar artigo (apenas para o autor)"""
     artigo = get_object_or_404(Artigo, id=id)
@@ -98,7 +98,7 @@ def editar_artigo(request, id):
 
 
 @login_required
-@user_passes_test(_is_autor)
+@user_passes_test(_is_blogger)
 def deletar_artigo(request, id):
     """Deletar artigo (apenas para o autor)"""
     artigo = get_object_or_404(Artigo, id=id)
@@ -134,20 +134,32 @@ def toggle_like(request, id):
     else:
         gostou = True
     
-    # Se for AJAX, retornar JSON
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse({
             'gostou': gostou,
             'total_likes': artigo.total_likes()
         })
-    
-    # Caso contrário, redirecionar
     return redirect('artigos:detalhe_artigo', id=artigo.id)
 
 
-# --- COMENTÁRIOS ---
+@require_POST
+def adicionar_rating(request, id):
+    """Adicionar pontuação a um artigo"""
+    artigo = get_object_or_404(Artigo, id=id)
+    form = RatingForm(request.POST)
+    
+    if form.is_valid():
+        rating = form.save(commit=False)
+        rating.artigo = artigo
+        if request.user.is_authenticated:
+            rating.usuario = request.user
+        rating.save()
+        messages.success(request, 'Pontuação registada com sucesso!')
+    else:
+        messages.error(request, 'Não foi possível registar a pontuação. Escolha um valor entre 1 e 5.')
+    
+    return redirect('artigos:detalhe_artigo', id=artigo.id)
 
-@login_required
 @require_POST
 def adicionar_comentario(request, id):
     """Adicionar comentário a um artigo"""
@@ -157,8 +169,17 @@ def adicionar_comentario(request, id):
     if form.is_valid():
         comentario = form.save(commit=False)
         comentario.artigo = artigo
-        comentario.autor = request.user
+        if request.user.is_authenticated:
+            comentario.autor = request.user
+            if not comentario.autor_nome:
+                comentario.autor_nome = request.user.username
+        else:
+            comentario.autor = None
+            if not comentario.autor_nome:
+                comentario.autor_nome = 'Visitante'
         comentario.save()
         messages.success(request, 'Comentário adicionado com sucesso!')
+    else:
+        messages.error(request, 'Não foi possível adicionar o comentário. Verifique os dados e tente novamente.')
     
     return redirect('artigos:detalhe_artigo', id=artigo.id)

@@ -3,6 +3,12 @@
 {% block content %}
 <h2 class="page-title">Sobre Mim</h2>
 
+<div style="display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0 2rem; align-items: center;">
+    <a href="{{ linkedin_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">LinkedIn</a>
+    <a href="{{ discord_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Discord</a>
+    <a href="{{ github_repo }}" target="_blank" rel="noopener noreferrer" class="btn btn-edit">Repositório GitHub</a>
+</div>
+
 <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0 1rem;">
     <h3 style="margin:0;">Competências Técnicas</h3>
     {% if is_gestor %}

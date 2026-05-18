@@ -2,6 +2,7 @@
 {% block content %}
 <div class="form-container">
     <h2>Registo</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">O seu registo irá torná-lo membro do grupo <strong>bloggers</strong>, permitindo criar artigos no sistema.</p>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

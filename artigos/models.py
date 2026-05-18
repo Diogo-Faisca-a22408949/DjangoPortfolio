@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Avg
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
 
@@ -24,6 +26,13 @@ class Artigo(models.Model):
     def total_comentarios(self):
         return self.comentarios.count()
 
+    def rating_count(self):
+        return self.ratings.count()
+
+    def average_rating(self):
+        average = self.ratings.aggregate(Avg('valor'))['valor__avg']
+        return round(average, 1) if average is not None else None
+
 
 class Like(models.Model):
     artigo = models.ForeignKey(Artigo, on_delete=models.CASCADE, related_name='likes')
@@ -40,7 +49,8 @@ class Like(models.Model):
 
 class Comentario(models.Model):
     artigo = models.ForeignKey(Artigo, on_delete=models.CASCADE, related_name='comentarios')
-    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    autor_nome = models.CharField(max_length=100, blank=True)
     texto = models.TextField()
     data_criacao = models.DateTimeField(auto_now_add=True)
 
@@ -49,4 +59,20 @@ class Comentario(models.Model):
         verbose_name_plural = "Comentários"
 
     def __str__(self):
-        return f"Comentário de {self.autor.username} em {self.artigo.titulo}"
+        autor = self.autor.username if self.autor else self.autor_nome or 'Visitante'
+        return f"Comentário de {autor} em {self.artigo.titulo}"
+
+
+class Rating(models.Model):
+    artigo = models.ForeignKey(Artigo, on_delete=models.CASCADE, related_name='ratings')
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    valor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    data_criacao = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-data_criacao']
+        verbose_name_plural = "Avaliações"
+
+    def __str__(self):
+        usuario = self.usuario.username if self.usuario else 'Visitante'
+        return f"{self.valor} estrelas para {self.artigo.titulo} por {usuario}"

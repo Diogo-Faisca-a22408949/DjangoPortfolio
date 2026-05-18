@@ -4,6 +4,9 @@ from .forms import ProjetoForm, TecnologiaForm, CompetenciaForm, FormacaoForm, U
 
 # --- VISTAS DE LISTAGEM (Páginas Principais) ---
 
+def landing_view(request):
+    return render(request, 'portfolio/landing.html')
+
 def cursos_view(request):
     licenciaturas = Licenciatura.objects.prefetch_related('ucs__projeto_set__tecnologias').all()
     return render(request, 'portfolio/cursos.html', {'licenciaturas': licenciaturas, 'is_gestor': _is_gestor(request.user)})
@@ -13,8 +16,11 @@ def pessoal_view(request):
         'competencias': Competencia.objects.prefetch_related('tecnologias_associadas', 'projetos_associados').all(),
         'formacoes': Formacao.objects.all(),
         'interesses': InteressePessoal.objects.all(),
-        'tecnologias': Tecnologia.objects.all(), 
+        'tecnologias': Tecnologia.objects.all(),
         'is_gestor': _is_gestor(request.user),
+        'linkedin_url': 'https://www.linkedin.com/in/diogo-fa%C3%ADsca-ab22ab263/',
+        'discord_url': 'https://discord.gg/fallinngg',
+        'github_repo': 'https://github.com/Diogo-Faisca-a22408949/DjangoPortfolio',
     }
     return render(request, 'portfolio/pessoal.html', context)
 
@@ -31,8 +37,11 @@ def sobre_view(request):
     tipos_tecnologia = TipoTecnologia.objects.prefetch_related('tecnologias').all()
     return render(request, 'portfolio/sobre.html', {
         'tipos': tipos_tecnologia,
-        'github_repo': 'https://github.com/TEU_USERNAME/TEU_REPOSITORIO' # <-- ALTERA ISTO
+        'github_repo': 'https://github.com/Diogo-Faisca-a22408949/DjangoPortfolio'
     })
+
+def videotutoriais_view(request):
+    return render(request, 'portfolio/videotutoriais.html')
 
 # --- LÓGICA GENÉRICA PARA CRUD (Auxiliares) ---
 

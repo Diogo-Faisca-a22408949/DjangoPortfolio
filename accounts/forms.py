@@ -11,10 +11,7 @@ class CustomUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=commit)
         if commit:
-            # Adicionar utilizador automaticamente ao grupo 'autores'
-            try:
-                autores_group = Group.objects.get(name='autores')
-                user.groups.add(autores_group)
-            except Group.DoesNotExist:
-                pass
+            # Adicionar utilizador automaticamente ao grupo 'bloggers'
+            bloggers_group, created = Group.objects.get_or_create(name='bloggers')
+            user.groups.add(bloggers_group)
         return user

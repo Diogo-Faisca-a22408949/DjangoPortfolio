@@ -6,10 +6,14 @@ from . import views
 app_name = 'portfolio'
 
 urlpatterns = [
+    # Página de chegada / landing page
+    path('', views.landing_view, name='landing'),
+
     # Páginas de Listagem Principais
-    path('', views.cursos_view, name='cursos'),
+    path('cursos/', views.cursos_view, name='cursos'),
     path('pessoal/', views.pessoal_view, name='pessoal'),
     path('makingof/', views.makingof_view, name='makingof'),
+    path('videotutoriais/', views.videotutoriais_view, name='videotutoriais'),
     path('tfcs/', views.tfcs_view, name='tfcs'),
     path('sobre/', views.sobre_view, name='sobre'),
 

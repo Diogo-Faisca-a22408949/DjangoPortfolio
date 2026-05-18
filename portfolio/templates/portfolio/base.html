@@ -92,12 +92,17 @@
 </head>
 <body>
     <header class="navbar">
-        <h1>O Meu Portfólio</h1>
+        <div class="navbar-brand">
+            <h1>O Meu Portfólio</h1>
+            <button type="button" class="hamburger" aria-label="Abrir menu">&#9776;</button>
+        </div>
         <nav class="nav-links">
+            <a href="{% url 'portfolio:landing' %}">Início</a>
             <a href="{% url 'portfolio:cursos' %}">Formação & UCs</a>
             <a href="{% url 'portfolio:pessoal' %}">Sobre Mim</a>
             <a href="{% url 'artigos:lista_artigos' %}">Artigos</a>
             <a href="{% url 'portfolio:tfcs' %}">TFCs</a>
+            <a href="{% url 'portfolio:videotutoriais' %}">Videotutoriais</a>
             <a href="{% url 'portfolio:sobre' %}">Sobre a App</a>
             <a href="{% url 'portfolio:makingof' %}">Making Of</a>
             {% if request.user.is_authenticated %}
@@ -113,5 +118,16 @@
     <main style="padding: 2rem;">
         {% block content %}{% endblock %}
     </main>
+
+<script>
+  const menu = document.querySelector('.nav-links');
+  const botao = document.querySelector('.hamburger');
+
+  if (botao && menu) {
+    botao.addEventListener('click', () => {
+      menu.classList.toggle('mostrar');
+    });
+  }
+</script>
 </body>
 </html>

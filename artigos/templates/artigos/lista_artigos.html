@@ -7,7 +7,7 @@
 <div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h1 style="margin: 0;">Artigos</h1>
-        {% if is_autor %}
+        {% if is_blogger %}
             <a href="{% url 'artigos:criar_artigo' %}" class="btn btn-add">
                 ➕ Novo Artigo
             </a>
@@ -47,10 +47,11 @@
                             {{ artigo.texto|truncatewords:20 }}
                         </p>
                         
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
                             <div style="display: flex; gap: 1rem; font-size: 0.9rem; color: var(--secondary);">
                                 <span>❤️ {{ artigo.total_likes }}</span>
                                 <span>💬 {{ artigo.total_comentarios }}</span>
+                                <span>⭐ {% if artigo.average_rating %}{{ artigo.average_rating|floatformat:1 }}{% else %}Sem avaliação{% endif %}</span>
                             </div>
                             <a href="{% url 'artigos:detalhe_artigo' artigo.id %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">
                                 Ler mais →
@@ -63,7 +64,7 @@
     {% else %}
         <div style="text-align: center; padding: 3rem 2rem; background: var(--bg-card); border-radius: 1rem;">
             <p style="color: var(--secondary); font-size: 1.1rem; margin: 0;">
-                Ainda não há artigos. {% if is_autor %}<a href="{% url 'artigos:criar_artigo' %}">Crie o primeiro!</a>{% endif %}
+                Ainda não há artigos. {% if is_blogger %}<a href="{% url 'artigos:criar_artigo' %}">Crie o primeiro!</a>{% endif %}
             </p>
         </div>
     {% endif %}
